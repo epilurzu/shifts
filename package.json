@@ -1,0 +1,20 @@
+{
+  "name": "shifts",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "shifts.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/epilurzu/shifts.git"
+  },
+  "author": "Enrico Podda",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/epilurzu/shifts/issues"
+  },
+  "homepage": "https://github.com/epilurzu/shifts#readme"
+}
