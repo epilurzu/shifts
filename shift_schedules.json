@@ -1,0 +1,37 @@
+{
+  "1": {
+    "name": "morning",
+    "start": 7,
+    "end": 14,
+    "duration": 7,
+    "max_in_row": 3,
+    "possibilities": ["r", "1"]
+  },
+  "2": {
+    "name": "evening",
+    "start": 14,
+    "end": 21,
+    "duration": 7,
+    "max_in_row": 3,
+    "possibilities": ["r", "2"]
+  },
+  "3": {
+    "name": "night",
+    "start": 21,
+    "end": 7,
+    "duration": 10,
+    "max_in_row": 1,
+    "required": "s",
+    "possibilities": null
+  },
+  "s": {
+    "name": "s",
+    "required": "r",
+    "possibilities": null
+  },
+  "r": {
+    "name": "rest",
+    "max_in_row": 7,
+    "possibilities": ["1", "2", "3", "r"]
+  }
+}

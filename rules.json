@@ -1,0 +1,18 @@
+{
+  "min_weekly_hours": 36,
+  "max_weekly_hours": 42,
+  "rest_between_shifts": 11,
+  "wards": 2,
+  "nurses_per_wards": [
+    {
+      "morning": 4,
+      "evening": 4,
+      "night": 3
+    },
+    {
+      "morning": 2,
+      "evening": 2,
+      "night": 2
+    }
+  ]
+}
