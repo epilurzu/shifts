@@ -9,6 +9,6 @@ populate_possibilities(rules, shift_schedules);
 let combinations = get_combinations(rules, shift_schedules);
 
 for (let combination of combinations) {
-  console.log(combination.join(","));
+  console.log(combination.join(" "));
 }
 console.log(combinations.length);
