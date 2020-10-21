@@ -109,7 +109,7 @@ export function get_combinations(rules, shift_schedules) {
   let combinations = [];
 
   for (let schedule in shift_schedules) {
-    combinations = [...combinations, ..._get_combinations(rules, shift_schedules, combinations, [schedule])];
+    combinations = [...combinations, ..._get_combinations(rules, shift_schedules, [], [schedule])];
   }
 
   return combinations;
