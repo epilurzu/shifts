@@ -47,10 +47,21 @@ function too_many_in_a_row(combination, schedule, max_in_row) {
   }
 }
 
+function weekly_hours_respected(rules, shift_schedules, combination) {
+  let hours = 0;
+  for (let schedule of combination) {
+    hours = hours + shift_schedules[schedule]["duration"];
+  }
+
+  return rules["min_weekly_hours"] < hours && hours < rules["max_weekly_hours"];
+}
+
 function _get_combinations(rules, shift_schedules, combinations, combination) {
   //The whole week has been calculated
   if (combination.length == 7) {
-    combinations.push(combination);
+    if (weekly_hours_respected(rules, shift_schedules, combination)) {
+      combinations.push(combination);
+    }
     return combinations;
   } else {
     var last_item = combination.length - 1;

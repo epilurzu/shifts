@@ -5,7 +5,10 @@
     "end": 14,
     "duration": 7,
     "max_in_row": 3,
-    "possibilities": ["r", "1"]
+    "possibilities": [
+      "r",
+      "1"
+    ]
   },
   "2": {
     "name": "evening",
@@ -13,7 +16,10 @@
     "end": 21,
     "duration": 7,
     "max_in_row": 3,
-    "possibilities": ["r", "2"]
+    "possibilities": [
+      "r",
+      "2"
+    ]
   },
   "3": {
     "name": "night",
@@ -26,12 +32,19 @@
   },
   "s": {
     "name": "s",
+    "duration": 0,
     "required": "r",
     "possibilities": null
   },
   "r": {
     "name": "rest",
+    "duration": 0,
     "max_in_row": 1,
-    "possibilities": ["1", "2", "3", "r"]
+    "possibilities": [
+      "1",
+      "2",
+      "3",
+      "r"
+    ]
   }
 }
