@@ -38,6 +38,15 @@ function _get_combinations(rules, shift_schedules, combinations, combination) {
     } else if (shift_schedules[schedule]["possibilities"] != undefined) {
       //consider all last schedule possibilities
       for (possibility of shift_schedules[schedule]["possibilities"]) {
+        if (
+          too_many_in_a_row(
+            [...combination],
+            possibility,
+            shift_schedules[possibility]["max_in_row"]
+          )
+        ) {
+          continue;
+        }
         let combination_copy = [...combination];
         combination_copy.push(possibility);
 
@@ -47,15 +56,6 @@ function _get_combinations(rules, shift_schedules, combinations, combination) {
           combinations,
           combination_copy
         );
-        //if (
-        //  too_many_in_a_row(
-        //    [...combination],
-        //    candidate,
-        //    shift_schedules[candidate]["max_in_row"]
-        //  )
-        //) {
-        //  console.log(" Too many in a row: " + candidate);
-        //}
       }
       return combinations;
     } else {
@@ -113,3 +113,4 @@ let combinations = get_combinations(rules, shift_schedules);
 for (combination of combinations) {
   console.log(combination.join(","));
 }
+console.log(combinations.length);
