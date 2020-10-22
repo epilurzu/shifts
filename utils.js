@@ -61,7 +61,7 @@ function are_weekly_hours_respected(rules, shift_info, week) {
 
   let min_hours = rules["min_weekly_hours"];
   let max_hours = rules["max_weekly_hours"];
-  return min_hours < hours && hours < max_hours;
+  return min_hours <= hours && hours <= max_hours;
 }
 
 function _get_combinations_of_weeks(rules, shift_info, week, combinations = []) {
