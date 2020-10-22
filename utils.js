@@ -1,3 +1,5 @@
+import * as fs from "fs";
+
 function time_between(t1, t2) {
   return 24 - t1 + t2;
 }
@@ -95,10 +97,45 @@ function _get_combinations_of_weeks(rules, shift_info, week, combinations = []) 
 export function get_combinations_of_weeks(rules, shift_info) {
   let combinations = [];
 
-  //Calculate every possible wook starting from sorted turns in shift_info
+  //calculate every possible wook starting from sorted turns in shift_info
   Object.keys(shift_info).sort().forEach(function (turn) {
     combinations = [...combinations, ..._get_combinations_of_weeks(rules, shift_info, [turn])];
   });
 
   return combinations;
+}
+
+function is_legit_week(week, black_list) {
+  for (let day of week) {
+    if (black_list.includes(day)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+export function get_weeks_by_categories(combinations_of_weeks) {
+  let weeks_by_categories = JSON.parse(fs.readFileSync("weeks_by_categories_template.json"));
+
+  combinations_of_weeks.forEach(function (week) {
+    weeks_by_categories["starting_by"][week[0]].push(week);
+    weeks_by_categories["ending_by"][week[6]].push(week);
+
+    //populate only_morning and no_night
+    let black_list = ["2", "3", "s"]
+    if (is_legit_week(week, black_list)) {
+      weeks_by_categories["only_morning"].push(week);
+      weeks_by_categories["no_night"].push(week);
+    }
+
+    //populate only_evening and no_night
+    black_list = ["1", "3", "s"]
+    if (is_legit_week(week, black_list)) {
+      weeks_by_categories["only_evening"].push(week);
+      weeks_by_categories["no_night"].push(week);
+    }
+  });
+
+  return weeks_by_categories;
 }
