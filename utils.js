@@ -2,121 +2,103 @@ function time_between(t1, t2) {
   return 24 - t1 + t2;
 }
 
-export function populate_possibilities(rules, shift_schedules) {
+export function populate_next_possible_shift(shift_info, rest_needed) {
+  let start = 0;
+  let end = 0;
+
   //morning
-  if (
-    time_between(shift_schedules["1"]["end"], shift_schedules["2"]["start"]) >=
-    rules["rest_between_shifts"]
-  ) {
-    shift_schedules["1"]["possibilities"].push("2");
+  start = shift_info["2"]["start"];
+  end = shift_info["1"]["end"];
+  if (time_between(end, start) >= rest_needed) {
+    shift_info["1"]["next_possible_turn"].push("2");
   }
-  if (
-    time_between(shift_schedules["1"]["end"], shift_schedules["3"]["start"]) >=
-    rules["rest_between_shifts"]
-  ) {
-    shift_schedules["1"]["possibilities"].push("3");
+
+  start = shift_info["3"]["start"];
+  if (time_between(end, start) >= rest_needed) {
+    shift_info["1"]["next_possible_turn"].push("3");
   }
 
   //evening
-  if (
-    time_between(shift_schedules["2"]["end"], shift_schedules["1"]["start"]) >=
-    rules["rest_between_shifts"]
-  ) {
-    shift_schedules["2"]["possibilities"].push("1");
-  }
-  if (
-    time_between(shift_schedules["2"]["end"], shift_schedules["3"]["start"]) >=
-    rules["rest_between_shifts"]
-  ) {
-    shift_schedules["2"]["possibilities"].push("3");
+  start = shift_info["1"]["start"];
+  end = shift_info["2"]["end"];
+  if (time_between(end, start) >= rest_needed) {
+    shift_info["2"]["next_possible_turn"].push("1");
   }
 
-  for (let schedule in shift_schedules) {
-    if (shift_schedules[schedule]["possibilities"] != undefined) {
-      shift_schedules[schedule]["possibilities"].sort();
-    }
+  start = shift_info["3"]["start"];
+  if (time_between(end, start) >= rest_needed) {
+    shift_info["2"]["next_possible_turn"].push("3");
+  }
+
+  //sort
+  for (let schedule in shift_info) {
+    shift_info[schedule]["next_possible_turn"].sort();
   }
 }
 
-function too_many_in_a_row(combination, schedule, max_in_row) {
-  if (combination.length < max_in_row) {
+function are_too_many_in_a_row(week, possible_turn, max_in_row) {
+  if (week.length < max_in_row) {
     return false;
-  } else if (max_in_row == 0 || combination.length == 0) {
+  }
+  else if (max_in_row == 0) {
     return true;
-  } else {
-    let last_item = combination.length - 1;
-    if (combination[last_item] == schedule) {
-      combination.pop();
+  }
+  else {
+    let last_turn = week.length - 1;
+    if (week[last_turn] == possible_turn) {
+      week.pop();
       max_in_row--;
-      return too_many_in_a_row(combination, schedule, max_in_row);
+      return are_too_many_in_a_row(week, possible_turn, max_in_row);
     }
   }
 }
 
-function weekly_hours_respected(rules, shift_schedules, combination) {
+function are_weekly_hours_respected(rules, shift_info, week) {
   let hours = 0;
-  for (let schedule of combination) {
-    hours = hours + shift_schedules[schedule]["duration"];
+  for (let turn of week) {
+    hours = hours + shift_info[turn]["duration"];
   }
 
-  return rules["min_weekly_hours"] < hours && hours < rules["max_weekly_hours"];
+  let min_hours = rules["min_weekly_hours"];
+  let max_hours = rules["max_weekly_hours"];
+  return min_hours < hours && hours < max_hours;
 }
 
-function _get_combinations(rules, shift_schedules, combinations, combination) {
+function _get_combinations_of_weeks(rules, shift_info, week, combinations = []) {
   //The whole week has been calculated
-  if (combination.length == 7) {
-    if (weekly_hours_respected(rules, shift_schedules, combination)) {
-      combinations.push(combination);
+  if (week.length == 7) {
+    if (are_weekly_hours_respected(rules, shift_info, week)) {
+      combinations.push(week);
     }
     return combinations;
-  } else {
-    var last_item = combination.length - 1;
-    let schedule = combination[last_item];
+  }
+  else {
+    var last_turn_index = week.length - 1;
+    let last_turn = week[last_turn_index];
 
-    //check if last schedule in combination has a required
-    if (shift_schedules[schedule]["required"] != undefined) {
-      combination.push(shift_schedules[schedule]["required"]);
-      return _get_combinations(
-        rules,
-        shift_schedules,
-        combinations,
-        combination
-      );
-    } else if (shift_schedules[schedule]["possibilities"] != undefined) {
-      //consider all last schedule possibilities
-      for (let possibility of shift_schedules[schedule]["possibilities"]) {
-        if (
-          too_many_in_a_row(
-            [...combination],
-            possibility,
-            shift_schedules[possibility]["max_in_row"]
-          )
-        ) {
-          continue;
-        }
-        let combination_copy = [...combination];
-        combination_copy.push(possibility);
-
-        combinations = _get_combinations(
-          rules,
-          shift_schedules,
-          combinations,
-          combination_copy
-        );
+    //consider all next possible shifts based on last turn
+    for (let possible_turn of shift_info[last_turn]["next_possible_turn"]) {
+      if (are_too_many_in_a_row([...week], possible_turn, shift_info[possible_turn]["max_in_row"])) {
+        continue;
       }
-      return combinations;
-    } else {
-      console.error("Something is wrong!");
+
+      let week_copy = [...week];
+      week_copy.push(possible_turn);
+
+      combinations = _get_combinations_of_weeks(rules, shift_info, week_copy, combinations);
     }
+
+    return combinations;
   }
 }
 
-export function get_combinations(rules, shift_schedules) {
+export function get_combinations_of_weeks(rules, shift_info) {
   let combinations = [];
 
-  for (let schedule in shift_schedules) {
-    combinations = [...combinations, ..._get_combinations(rules, shift_schedules, [], [schedule])];
-  }
+  //Calculate every possible wook starting from sorted turns in shift_info
+  Object.keys(shift_info).sort().forEach(function (turn) {
+    combinations = [...combinations, ..._get_combinations_of_weeks(rules, shift_info, [turn])];
+  });
 
   return combinations;
 }

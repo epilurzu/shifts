@@ -1,0 +1,57 @@
+{
+  "1": {
+    "meaning": "morning",
+    "start": 7,
+    "end": 14,
+    "duration": 7,
+    "max_in_row": 3,
+    "next_possible_turn": [
+      "1",
+      "r"
+    ]
+  },
+  "2": {
+    "meaning": "evening",
+    "start": 14,
+    "end": 21,
+    "duration": 7,
+    "max_in_row": 3,
+    "next_possible_turn": [
+      "2",
+      "r"
+    ]
+  },
+  "3": {
+    "meaning": "night",
+    "start": 21,
+    "end": 7,
+    "duration": 10,
+    "max_in_row": 1,
+    "next_possible_turn": [
+      "s"
+    ]
+  },
+  "s": {
+    "meaning": "s",
+    "start": null,
+    "end": null,
+    "duration": 0,
+    "max_in_row": 1,
+    "next_possible_turn": [
+      "r"
+    ]
+  },
+  "r": {
+    "meaning": "rest",
+    "start": null,
+    "end": null,
+    "duration": 0,
+    "max_in_row": 1,
+    "next_possible_turn": [
+      "1",
+      "2",
+      "3",
+      "r"
+    ]
+  }
+}
