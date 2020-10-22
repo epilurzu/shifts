@@ -30,6 +30,12 @@ export function populate_possibilities(rules, shift_schedules) {
   ) {
     shift_schedules["2"]["possibilities"].push("3");
   }
+
+  for (let schedule in shift_schedules) {
+    if (shift_schedules[schedule]["possibilities"] != undefined) {
+      shift_schedules[schedule]["possibilities"].sort();
+    }
+  }
 }
 
 function too_many_in_a_row(combination, schedule, max_in_row) {
