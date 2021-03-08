@@ -66,11 +66,33 @@ function are_weekly_hours_respected(rules, shift_info, week) {
   return min_hours <= hours && hours <= max_hours;
 }
 
+function are_not_too_many_in_a_row(week, rules) {
+
+  var counter = rules["max_work_days_in_a_row"];
+
+  for (let day of week) {
+    if (day == "s" || day == "r") {
+      counter = rules["max_work_days_in_a_row"];
+    }
+    else {
+      counter--;
+    }
+
+    if (counter < 0) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 function _get_combinations_of_weeks(rules, shift_info, week, combinations = []) {
   //The whole week has been calculated
   if (week.length == 7) {
     if (are_weekly_hours_respected(rules, shift_info, week)) {
-      combinations.push(week);
+      if (are_not_too_many_in_a_row(week, rules)) {
+        combinations.push(week);
+      }
     }
     return combinations;
   }

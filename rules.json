@@ -2,8 +2,10 @@
   "min_weekly_hours": 36,
   "max_weekly_hours": 42,
   "rest_between_shifts": 11,
+  "max_work_days_in_a_row": 5,
   "wards": 2,
-  "nurses_per_wards": [{
+  "nurses_per_wards": [
+    {
       "morning": 4,
       "evening": 4,
       "night": 3
